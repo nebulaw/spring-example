@@ -13,8 +13,14 @@ public interface IDepartmentService {
 
   ApiResponse getAllDepartments();
 
+  ApiResponse getAllProjectionDepartments();
+
+  ApiResponse getAllDepartmentsByFilter(DataDto<DepartmentDto> dataDto);
+
   ApiResponse updateDepartment(Long id, DataDto<DepartmentDto> department);
 
   ApiResponse deleteDepartment(Long id);
+
+  ApiResponse getAllDepartments(Integer page);
 
 }

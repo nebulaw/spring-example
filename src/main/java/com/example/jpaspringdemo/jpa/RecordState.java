@@ -1,4 +1,4 @@
-package com.example.jpaspringdemo.jpa.entities;
+package com.example.jpaspringdemo.jpa;
 
 public enum RecordState {
   ACTIVE,

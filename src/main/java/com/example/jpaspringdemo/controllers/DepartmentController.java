@@ -7,6 +7,7 @@ import com.example.jpaspringdemo.services.IDepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
 @RequestMapping("/department")
 @RestController
 public class DepartmentController{
@@ -28,8 +29,23 @@ public class DepartmentController{
     return departmentService.getDepartment(id);
   }
 
+  @GetMapping("/page-{page}")
+  public ApiResponse getDepartmentsOnPage(@PathVariable Integer page) {
+    return page == null ? departmentService.getAllDepartments() : departmentService.getAllDepartments(page);
+  }
+
+  @GetMapping("/projection")
+  public ApiResponse getAllProjectionDepartments() {
+    return departmentService.getAllProjectionDepartments();
+  }
+
+  @PostMapping("/filter")
+  public ApiResponse getAllDepartmentsByFilter(@RequestBody DataDto<DepartmentDto> dataDto) {
+    return departmentService.getAllDepartmentsByFilter(dataDto);
+  }
+
   @GetMapping
-  public ApiResponse getAll() {
+  public ApiResponse getAllDepartments() {
     return departmentService.getAllDepartments();
   }
 

@@ -33,6 +33,16 @@ public class EmployeeController {
     return employeeService.getAllEmployees();
   }
 
+  @GetMapping("/employee/projection")
+  public ApiResponse getProjectionEmployees() {
+    return employeeService.getAllProjectionEmployees();
+  }
+
+  @PostMapping("/filter")
+  public ApiResponse getAllEmployeesByFilter(@RequestBody DataDto<EmployeeDto> dataDto) {
+    return employeeService.getAllEmployeesByFilter(dataDto);
+  }
+
   @GetMapping("/department/{departmentId}/employees")
   public ApiResponse getAllEmployeesInDepartment(@PathVariable Long departmentId) {
     return employeeService.getAllEmployeesByDepartmentId(departmentId);

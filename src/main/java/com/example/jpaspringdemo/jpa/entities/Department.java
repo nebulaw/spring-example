@@ -1,6 +1,7 @@
 package com.example.jpaspringdemo.jpa.entities;
 
 import com.example.jpaspringdemo.dtos.DepartmentDto;
+import com.example.jpaspringdemo.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

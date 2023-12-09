@@ -14,6 +14,10 @@ public interface IEmployeeService {
 
   ApiResponse getAllEmployeesByDepartmentId(Long departmentId);
 
+  ApiResponse getAllProjectionEmployees();
+
+  ApiResponse getAllEmployeesByFilter(DataDto<EmployeeDto> dataDto);
+
   ApiResponse updateEmployee(Long id, DataDto<EmployeeDto> dataDto);
 
   ApiResponse deleteEmployee(Long id);

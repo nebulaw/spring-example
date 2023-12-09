@@ -5,13 +5,16 @@ import com.example.jpaspringdemo.dtos.DataDto;
 import com.example.jpaspringdemo.dtos.DepartmentDto;
 import com.example.jpaspringdemo.exceptions.IncorrectParameterException;
 import com.example.jpaspringdemo.exceptions.NoSuchElementFoundException;
+import com.example.jpaspringdemo.jpa.RecordState;
 import com.example.jpaspringdemo.jpa.entities.Department;
-import com.example.jpaspringdemo.jpa.entities.RecordState;
+import com.example.jpaspringdemo.jpa.specifications.DepartmentSpecification;
 import com.example.jpaspringdemo.repositories.DepartmentRepository;
 import com.example.jpaspringdemo.services.BaseService;
 import com.example.jpaspringdemo.services.IDepartmentService;
 import com.example.jpaspringdemo.utils.ApiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -42,6 +45,7 @@ public class DepartmentServiceImpl extends BaseService implements IDepartmentSer
   @Override
   public ApiResponse getDepartment(Long id) {
     Optional<Department> departmentOptional = departmentRepository.findByIdAndRecordState(id, RecordState.ACTIVE);
+
     departmentOptional.orElseThrow(() -> new NoSuchElementFoundException("no department found by id=" + id));
     return ApiUtils.getApiResponse(departmentOptional.get());
   }
@@ -52,11 +56,34 @@ public class DepartmentServiceImpl extends BaseService implements IDepartmentSer
   }
 
   @Override
+  public ApiResponse getAllProjectionDepartments() {
+    return new ApiResponse("Departments", departmentRepository.findAllProjectionDto());
+  }
+
+  @Override
+  public ApiResponse getAllDepartmentsByFilter(DataDto<DepartmentDto> dataDto) {
+    if (dataDto == null || dataDto.getData() == null) {
+      throw new IncorrectParameterException();
+    }
+
+    Specification<Department> specification = Specification.where(DepartmentSpecification.idIsNotNull());
+    if (dataDto.getData().getId() != null) {
+      specification = specification.and(DepartmentSpecification.idEquals(dataDto.getData().getId()));
+    }
+    if (dataDto.getData().getName() != null) {
+      specification = specification.and(DepartmentSpecification.likeName(dataDto.getData().getName()));
+    }
+
+    return new ApiResponse("Departments", departmentRepository.findAll(specification));
+  }
+
+  @Override
   public ApiResponse updateDepartment(Long id, DataDto<DepartmentDto> dataDto) {
     Optional<Department> departmentOptional = departmentRepository.findByIdAndRecordState(id, RecordState.ACTIVE);
     departmentOptional.orElseThrow(() -> new NoSuchElementFoundException("no department found by id=" + id));
     Department department1 = departmentOptional.get();
     department1.setName(dataDto.getData().getName());
+
     return ApiUtils.getApiResponse(departmentRepository.save(department1));
   }
 
@@ -66,7 +93,14 @@ public class DepartmentServiceImpl extends BaseService implements IDepartmentSer
     departmentOptional.orElseThrow(() -> new NoSuchElementFoundException("no department found by id=" + id));
     Department department1 = departmentOptional.get();
     department1.setRecordState(RecordState.DELETED);
+
     return ApiUtils.getApiResponse(departmentRepository.save(department1));
+  }
+
+  @Override
+  public ApiResponse getAllDepartments(Integer page) {
+    Specification<Department> specification = Specification.where(DepartmentSpecification.idIsNotNull());
+    return new ApiResponse();
   }
 
 }
