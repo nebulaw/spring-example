@@ -13,6 +13,10 @@ public interface IDepartmentService {
 
   ApiResponse getAllDepartments();
 
+  ApiResponse getAllDepartmentsSorted(String[] sort);
+
+  ApiResponse getDepartmentsPage(Integer page, Integer size, String[] sort);
+
   ApiResponse getAllProjectionDepartments();
 
   ApiResponse getAllDepartmentsByFilter(DataDto<DepartmentDto> dataDto);
@@ -20,7 +24,5 @@ public interface IDepartmentService {
   ApiResponse updateDepartment(Long id, DataDto<DepartmentDto> department);
 
   ApiResponse deleteDepartment(Long id);
-
-  ApiResponse getAllDepartments(Integer page);
 
 }

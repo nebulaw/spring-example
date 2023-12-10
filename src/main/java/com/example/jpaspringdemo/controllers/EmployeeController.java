@@ -6,6 +6,7 @@ import com.example.jpaspringdemo.dtos.EmployeeDto;
 import com.example.jpaspringdemo.services.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
 
 @RestController
@@ -25,12 +26,26 @@ public class EmployeeController {
 
   @GetMapping("/employee/{id}")
   public ApiResponse getEmployee(@PathVariable Long id) {
-    return employeeService.getEmployee(id);
+    return employeeService.getEmployeeById(id);
+  }
+
+  @GetMapping("/employee/all")
+  public ApiResponse getAllEmployees() {
+    return employeeService.getAllEmployees();
+  }
+
+  @GetMapping("/employee/sorted")
+  public ApiResponse getAllEmployeesSorted(@RequestParam(defaultValue = "id,asc") String[] sort) {
+    return employeeService.getAllEmployeesSorted(sort);
   }
 
   @GetMapping("/employee")
-  public ApiResponse getAllEmployees() {
-    return employeeService.getAllEmployees();
+  public ApiResponse getEmployeePage(
+          @RequestParam(defaultValue = "0") Integer page,
+          @RequestParam(defaultValue = "2") Integer size,
+          @RequestParam(defaultValue = "id,asc") String[] sort
+  ) {
+    return employeeService.getEmployeesPage(page, size, sort);
   }
 
   @GetMapping("/employee/projection")
@@ -38,7 +53,7 @@ public class EmployeeController {
     return employeeService.getAllProjectionEmployees();
   }
 
-  @PostMapping("/filter")
+  @PostMapping("/employee/filter")
   public ApiResponse getAllEmployeesByFilter(@RequestBody DataDto<EmployeeDto> dataDto) {
     return employeeService.getAllEmployeesByFilter(dataDto);
   }

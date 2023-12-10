@@ -8,9 +8,13 @@ public interface IEmployeeService {
 
   ApiResponse addEmployee(Long departmentId, DataDto<EmployeeDto> dataDto);
 
-  ApiResponse getEmployee(Long id);
+  ApiResponse getEmployeeById(Long id);
 
   ApiResponse getAllEmployees();
+
+  ApiResponse getAllEmployeesSorted(String[] sort);
+
+  ApiResponse getEmployeesPage(Integer page, Integer size, String[] sort);
 
   ApiResponse getAllEmployeesByDepartmentId(Long departmentId);
 
