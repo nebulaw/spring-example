@@ -14,93 +14,139 @@ import com.example.jpaspringdemo.services.IDepartmentService;
 import com.example.jpaspringdemo.utils.ApiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
 @Service
 public class DepartmentServiceImpl extends BaseService implements IDepartmentService {
 
-  private final DepartmentRepository departmentRepository;
+    private final DepartmentRepository departmentRepository;
 
-  @Autowired
-  public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
-    this.departmentRepository = departmentRepository;
-  }
-
-  @Override
-  public ApiResponse addDepartment(DataDto<DepartmentDto> dataDto) {
-    if (dataDto.getData() == null) {
-      throw new IncorrectParameterException("Data");
-    }
-    if (!StringUtils.hasText(dataDto.getData().getName())) {
-      throw new IncorrectParameterException("name");
-    }
-    return ApiUtils.getApiResponse(departmentRepository.save(new Department(dataDto.getData())));
-  }
-
-  @Override
-  public ApiResponse getDepartment(Long id) {
-    Optional<Department> departmentOptional = departmentRepository.findByIdAndRecordState(id, RecordState.ACTIVE);
-
-    departmentOptional.orElseThrow(() -> new NoSuchElementFoundException("no department found by id=" + id));
-    return ApiUtils.getApiResponse(departmentOptional.get());
-  }
-
-  @Override
-  public ApiResponse getAllDepartments() {
-    return new ApiResponse("Departments", departmentRepository.findAllByRecordState(RecordState.ACTIVE));
-  }
-
-  @Override
-  public ApiResponse getAllProjectionDepartments() {
-    return new ApiResponse("Departments", departmentRepository.findAllProjectionDto());
-  }
-
-  @Override
-  public ApiResponse getAllDepartmentsByFilter(DataDto<DepartmentDto> dataDto) {
-    if (dataDto == null || dataDto.getData() == null) {
-      throw new IncorrectParameterException();
+    @Autowired
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
+        this.departmentRepository = departmentRepository;
     }
 
-    Specification<Department> specification = Specification.where(DepartmentSpecification.idIsNotNull());
-    if (dataDto.getData().getId() != null) {
-      specification = specification.and(DepartmentSpecification.idEquals(dataDto.getData().getId()));
+    private static Direction sortDirection(String direction) {
+        return switch (direction) {
+            case "desc", "DESC" -> Direction.DESC;
+            default -> Direction.ASC;
+        };
     }
-    if (dataDto.getData().getName() != null) {
-      specification = specification.and(DepartmentSpecification.likeName(dataDto.getData().getName()));
+
+    @Override
+    public ApiResponse addDepartment(DataDto<DepartmentDto> dataDto) {
+        if (dataDto.getData() == null) {
+            throw new IncorrectParameterException("Data");
+        }
+        if (!StringUtils.hasText(dataDto.getData().getName())) {
+            throw new IncorrectParameterException("name");
+        }
+        return ApiUtils.getApiResponse(departmentRepository.save(new Department(dataDto.getData())));
     }
 
-    return new ApiResponse("Departments", departmentRepository.findAll(specification));
-  }
+    @Override
+    public ApiResponse getDepartment(Long id) {
+        Optional<Department> departmentOptional = departmentRepository.findByIdAndRecordState(id, RecordState.ACTIVE);
 
-  @Override
-  public ApiResponse updateDepartment(Long id, DataDto<DepartmentDto> dataDto) {
-    Optional<Department> departmentOptional = departmentRepository.findByIdAndRecordState(id, RecordState.ACTIVE);
-    departmentOptional.orElseThrow(() -> new NoSuchElementFoundException("no department found by id=" + id));
-    Department department1 = departmentOptional.get();
-    department1.setName(dataDto.getData().getName());
+        departmentOptional.orElseThrow(() -> new NoSuchElementFoundException("no department found by id=" + id));
+        return ApiUtils.getApiResponse(departmentOptional.get());
+    }
 
-    return ApiUtils.getApiResponse(departmentRepository.save(department1));
-  }
+    @Override
+    public ApiResponse getAllDepartments() {
+        return new ApiResponse("Departments", departmentRepository.findAllByRecordState(RecordState.ACTIVE));
+    }
 
-  @Override
-  public ApiResponse deleteDepartment(Long id) {
-    Optional<Department> departmentOptional = departmentRepository.findByIdAndRecordState(id, RecordState.ACTIVE);
-    departmentOptional.orElseThrow(() -> new NoSuchElementFoundException("no department found by id=" + id));
-    Department department1 = departmentOptional.get();
-    department1.setRecordState(RecordState.DELETED);
+    @Override
+    public ApiResponse getAllDepartmentsSorted(String[] sort) {
+        List<Order> orders = new ArrayList<>();
 
-    return ApiUtils.getApiResponse(departmentRepository.save(department1));
-  }
+        if (sort.length >= 1 && sort[0].contains(",")) {
+            for (String item : sort) {
+                String[] order = item.split(",");
+                orders.add(new Order(sortDirection(order[1]), order[0]));
+            }
+        } else if (sort.length == 2) {
+            orders.add(new Order(sortDirection(sort[1]), sort[0]));
+        }
 
-  @Override
-  public ApiResponse getAllDepartments(Integer page) {
-    Specification<Department> specification = Specification.where(DepartmentSpecification.idIsNotNull());
-    return new ApiResponse();
-  }
+        return new ApiResponse("Departments", departmentRepository.findAll(Sort.by(orders)));
+    }
+
+    @Override
+    public ApiResponse getDepartmentsPage(Integer page, Integer size, String[] sort) {
+        List<Order> orders = new ArrayList<>();
+
+        if (sort.length >= 1 && sort[0].contains(",")) {
+            for (String item : sort) {
+                String[] order = item.split(",");
+                orders.add(new Order(sortDirection(order[1]), order[0]));
+            }
+        } else if (sort.length >= 1) {
+            orders.add(new Order(sortDirection(sort[1]), sort[0]));
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+
+        Page<Department> depPage = departmentRepository.findAllByRecordState(RecordState.ACTIVE, pageable);
+        return new ApiResponse()
+                .addData("Departments", depPage.getContent())
+                .addData("Current Page", page)
+                .addData("Total Pages", depPage.getTotalPages());
+    }
+
+    @Override
+    public ApiResponse getAllProjectionDepartments() {
+        return new ApiResponse("Departments", departmentRepository.findAllProjectionDto());
+    }
+
+    @Override
+    public ApiResponse getAllDepartmentsByFilter(DataDto<DepartmentDto> dataDto) {
+        if (dataDto == null || dataDto.getData() == null) {
+            throw new IncorrectParameterException();
+        }
+
+        Specification<Department> specification = Specification.where(DepartmentSpecification.idIsNotNull());
+        if (dataDto.getData().getId() != null) {
+            specification = specification.and(DepartmentSpecification.idEquals(dataDto.getData().getId()));
+        }
+        if (dataDto.getData().getName() != null) {
+            specification = specification.and(DepartmentSpecification.likeName(dataDto.getData().getName()));
+        }
+
+        return new ApiResponse("Departments", departmentRepository.findAll(specification));
+    }
+
+    @Override
+    public ApiResponse updateDepartment(Long id, DataDto<DepartmentDto> dataDto) {
+        Optional<Department> departmentOptional = departmentRepository.findByIdAndRecordState(id, RecordState.ACTIVE);
+        departmentOptional.orElseThrow(() -> new NoSuchElementFoundException("no department found by id=" + id));
+        Department department1 = departmentOptional.get();
+        department1.setName(dataDto.getData().getName());
+
+        return ApiUtils.getApiResponse(departmentRepository.save(department1));
+    }
+
+    @Override
+    public ApiResponse deleteDepartment(Long id) {
+        Optional<Department> departmentOptional = departmentRepository.findByIdAndRecordState(id, RecordState.ACTIVE);
+        departmentOptional.orElseThrow(() -> new NoSuchElementFoundException("no department found by id=" + id));
+        Department department1 = departmentOptional.get();
+        department1.setRecordState(RecordState.DELETED);
+
+        return ApiUtils.getApiResponse(departmentRepository.save(department1));
+    }
 
 }

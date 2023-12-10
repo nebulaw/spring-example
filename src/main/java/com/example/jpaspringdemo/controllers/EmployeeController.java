@@ -38,7 +38,7 @@ public class EmployeeController {
     return employeeService.getAllProjectionEmployees();
   }
 
-  @PostMapping("/filter")
+  @PostMapping("/employee/filter")
   public ApiResponse getAllEmployeesByFilter(@RequestBody DataDto<EmployeeDto> dataDto) {
     return employeeService.getAllEmployeesByFilter(dataDto);
   }

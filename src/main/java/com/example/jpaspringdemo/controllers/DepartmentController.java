@@ -29,11 +29,6 @@ public class DepartmentController{
     return departmentService.getDepartment(id);
   }
 
-  @GetMapping("/page-{page}")
-  public ApiResponse getDepartmentsOnPage(@PathVariable Integer page) {
-    return page == null ? departmentService.getAllDepartments() : departmentService.getAllDepartments(page);
-  }
-
   @GetMapping("/projection")
   public ApiResponse getAllProjectionDepartments() {
     return departmentService.getAllProjectionDepartments();
@@ -44,9 +39,23 @@ public class DepartmentController{
     return departmentService.getAllDepartmentsByFilter(dataDto);
   }
 
-  @GetMapping
+  @GetMapping("/all")
   public ApiResponse getAllDepartments() {
     return departmentService.getAllDepartments();
+  }
+
+  @GetMapping("/sorted")
+  public ApiResponse getAllDepartments(String[] sort) {
+    return departmentService.getAllDepartmentsSorted(sort);
+  }
+
+  @GetMapping("/")
+  public ApiResponse getAllDepartmentsPage(
+          @RequestParam(defaultValue = "0") Integer page,
+          @RequestParam(defaultValue = "3") Integer size,
+          @RequestParam(defaultValue = "id,asc") String[] sort
+  ) {
+    return departmentService.getDepartmentsPage(page, size, sort);
   }
 
   @PutMapping("/{id}")
