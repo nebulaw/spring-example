@@ -1,14 +1,12 @@
 package com.example.jpaspringdemo.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class DataDto<T> {
-  private T data;
+    private T data;
 }

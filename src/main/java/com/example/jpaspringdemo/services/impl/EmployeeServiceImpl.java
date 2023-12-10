@@ -44,7 +44,7 @@ public class EmployeeServiceImpl extends BaseService implements IEmployeeService
     if (!StringUtils.hasText(dataDto.getData().getFullName())) {
       e.addParameter("fullName");
     }
-    if (dataDto.getData().getDepartmentId() == null) {
+    if (departmentId == null) {
       e.addParameter("departmentId");
     }
     if (dataDto.getData().getSalary() == null) {
