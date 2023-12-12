@@ -1,6 +1,5 @@
 package com.example.jpaspringdemo.jpa;
 
-import com.example.jpaspringdemo.jpa.RecordState;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
