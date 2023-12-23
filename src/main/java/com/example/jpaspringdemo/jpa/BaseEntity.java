@@ -2,7 +2,8 @@ package com.example.jpaspringdemo.jpa;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,20 +16,20 @@ import java.util.Date;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
-  @CreatedDate
-  @Column(name = "CREATE_DATE", updatable = false)
-  @Temporal(TemporalType.TIMESTAMP)
-  @JsonIgnore
-  protected Date createDate;
+    @CreatedDate
+    @Column(name = "CREATE_DATE", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
+    protected Date createDate;
 
-  @LastModifiedDate
-  @Column(name = "UPDATE_DATE")
-  @Temporal(TemporalType.TIMESTAMP)
-  @JsonIgnore
-  protected Date updateDate;
+    @LastModifiedDate
+    @Column(name = "UPDATE_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
+    protected Date updateDate;
 
-  @Enumerated(EnumType.ORDINAL)
-  @Column(name = "RECORD_STATE", nullable = false)
-  @JsonIgnore
-  protected RecordState recordState = RecordState.ACTIVE;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "RECORD_STATE", nullable = false)
+    @JsonIgnore
+    protected RecordState recordState = RecordState.ACTIVE;
 }

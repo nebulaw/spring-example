@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class NoSuchElementFoundException extends RuntimeException {
 
-  public NoSuchElementFoundException(String desc) {
-    super(desc);
-  }
+    public NoSuchElementFoundException(String desc) {
+        super(desc);
+    }
 
 
 /*
@@ -24,12 +24,12 @@ public class NoSuchElementFoundException extends RuntimeException {
 
   */
 
-  /*
-  *
-  * Collection - Application Errors
-  * id, applicationName, applicationKeyword, errorKeyword, errorDescription{en:"...",ka:"...",ru="..."}
-  *
-  * */
+    /*
+     *
+     * Collection - Application Errors
+     * id, applicationName, applicationKeyword, errorKeyword, errorDescription{en:"...",ka:"...",ru="..."}
+     *
+     * */
 
 }
 

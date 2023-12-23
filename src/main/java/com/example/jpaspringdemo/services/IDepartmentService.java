@@ -7,22 +7,22 @@ import com.example.jpaspringdemo.dtos.DepartmentDto;
 
 public interface IDepartmentService {
 
-  ApiResponse addDepartment(DataDto<DepartmentDto> dataDto);
+    ApiResponse addDepartment(DataDto<DepartmentDto> dataDto);
 
-  ApiResponse getDepartment(Long id);
+    ApiResponse getDepartment(Long id);
 
-  ApiResponse getAllDepartments();
+    ApiResponse getAllDepartments();
 
-  ApiResponse getAllDepartmentsSorted(String[] sort);
+    ApiResponse getAllDepartmentsSorted(String[] sort);
 
-  ApiResponse getDepartmentsPage(Integer page, Integer size, String[] sort);
+    ApiResponse getDepartmentsPage(Integer page, Integer size, String[] sort);
 
-  ApiResponse getAllProjectionDepartments();
+    ApiResponse getAllProjectionDepartments();
 
-  ApiResponse getAllDepartmentsByFilter(DataDto<DepartmentDto> dataDto);
+    ApiResponse getAllDepartmentsByFilter(DataDto<DepartmentDto> dataDto);
 
-  ApiResponse updateDepartment(Long id, DataDto<DepartmentDto> department);
+    ApiResponse updateDepartment(Long id, DataDto<DepartmentDto> department);
 
-  ApiResponse deleteDepartment(Long id);
+    ApiResponse deleteDepartment(Long id);
 
 }

@@ -6,24 +6,24 @@ import com.example.jpaspringdemo.dtos.EmployeeDto;
 
 public interface IEmployeeService {
 
-  ApiResponse addEmployee(Long departmentId, DataDto<EmployeeDto> dataDto);
+    ApiResponse addEmployee(Long departmentId, DataDto<EmployeeDto> dataDto);
 
-  ApiResponse getEmployeeById(Long id);
+    ApiResponse getEmployeeById(Long id);
 
-  ApiResponse getAllEmployees();
+    ApiResponse getAllEmployees();
 
-  ApiResponse getAllEmployeesSorted(String[] sort);
+    ApiResponse getAllEmployeesSorted(String[] sort);
 
-  ApiResponse getEmployeesPage(Integer page, Integer size, String[] sort);
+    ApiResponse getEmployeesPage(Integer page, Integer size, String[] sort);
 
-  ApiResponse getAllEmployeesByDepartmentId(Long departmentId);
+    ApiResponse getAllEmployeesByDepartmentId(Long departmentId);
 
-  ApiResponse getAllProjectionEmployees();
+    ApiResponse getAllProjectionEmployees();
 
-  ApiResponse getAllEmployeesByFilter(DataDto<EmployeeDto> dataDto);
+    ApiResponse getAllEmployeesByFilter(DataDto<EmployeeDto> dataDto);
 
-  ApiResponse updateEmployee(Long id, DataDto<EmployeeDto> dataDto);
+    ApiResponse updateEmployee(Long id, DataDto<EmployeeDto> dataDto);
 
-  ApiResponse deleteEmployee(Long id);
+    ApiResponse deleteEmployee(Long id);
 
 }

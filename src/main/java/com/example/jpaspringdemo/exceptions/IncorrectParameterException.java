@@ -10,21 +10,21 @@ import java.util.Set;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class IncorrectParameterException extends RuntimeException {
 
-  @Getter
-  private Set<String> parameters;
+    @Getter
+    private Set<String> parameters;
 
-  public IncorrectParameterException() {
-    parameters = new HashSet<>();
-  }
+    public IncorrectParameterException() {
+        parameters = new HashSet<>();
+    }
 
-  public IncorrectParameterException(String parameter) {
-    this();
-    addParameter(parameter);
-  }
+    public IncorrectParameterException(String parameter) {
+        this();
+        addParameter(parameter);
+    }
 
-  public IncorrectParameterException addParameter(String parameter) {
-    parameters.add(parameter);
-    return this;
-  }
+    public IncorrectParameterException addParameter(String parameter) {
+        parameters.add(parameter);
+        return this;
+    }
 
 }
